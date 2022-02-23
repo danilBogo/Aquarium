@@ -18,9 +18,8 @@ public class AquariumHub : Hub
 
     public async Task<Map> GetMap() => _map;
 
-    public bool TryCreateTaskFish(int fishId, Location location, Direction direction, int speedX)
+    public bool TryCreateTaskFish(int fishId, TaskFish taskFish)
     {
-        var taskFish = new TaskFish(location, direction, speedX);
         if (_listFishes.ContainsKey(fishId))
             return false;
         _listFishes.Add(fishId, taskFish);
@@ -28,9 +27,8 @@ public class AquariumHub : Hub
         return true;
     }
     
-    public bool TryCreateThreadFish(int fishId, Location location, Direction direction, int speedX)
+    public bool TryCreateThreadFish(int fishId, ThreadFish threadFish)
     {
-        var threadFish = new ThreadFish(location, direction, speedX);
         if (_listFishes.ContainsKey(fishId))
             return false;
         _listFishes.Add(fishId, threadFish);
