@@ -7,8 +7,8 @@ public class ThreadFish : FishBase
     private int _threadId;
     private readonly CancellationTokenSource _cancelTokenSource = new();
     
-    public ThreadFish(Location location, Direction direction, int speedX) : base(location,
-        direction, speedX)
+    public ThreadFish(Location location, Direction direction, int speedX, int fishId) : base(location,
+        direction, speedX, fishId)
     {
     }
 

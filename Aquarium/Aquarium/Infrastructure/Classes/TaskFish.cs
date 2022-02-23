@@ -7,8 +7,8 @@ public class TaskFish : FishBase
     private int _taskId;
     private readonly CancellationTokenSource _cancelTokenSource = new();
     
-    public TaskFish(Location location, Direction direction, int speedX) : base(location,
-        direction, speedX)
+    public TaskFish(Location location, Direction direction, int speedX, int fishId) : base(location,
+        direction, speedX, fishId)
     {
     }
 
