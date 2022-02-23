@@ -1,7 +1,12 @@
+using Aquarium.Infrastructure.BackgroundServices;
+using Aquarium.Infrastructure.SignalR;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<Worker>();
 
 var app = builder.Build();
 
@@ -21,5 +26,10 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/chat");
+});
 
 app.Run();
