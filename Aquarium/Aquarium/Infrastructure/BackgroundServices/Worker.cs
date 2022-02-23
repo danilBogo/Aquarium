@@ -1,12 +1,15 @@
 ﻿using Aquarium.Infrastructure.Classes;
 using Aquarium.Infrastructure.Enums;
+using Aquarium.Infrastructure.SignalR;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Aquarium.Infrastructure.BackgroundServices;
 
 public class Worker : BackgroundService
 {
-    readonly ILogger<Worker> _logger;
-
+    private readonly ILogger<Worker> _logger;
+    
     public Worker(ILogger<Worker> logger)
     {
         _logger = logger;
@@ -14,36 +17,35 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var map = new Map(100, 100);
-        var location1 = new Location(0, 10);
-        var location2 = new Location(0, 20);
-        var delay = 1000;
+        // IHubContext hubContext = GlobalHost.ConnectionManager.GetHubContext<AquariumHub>();
+        // hubContext.Clients.All.addMessage("server", "ServerMessage");
+        // await _hub.Clients.All.SendAsync("send", "123");
+        // await _hub.Clients.All.SendAsync("send", "123");
+        // await _hub.Clients.All.SendAsync("send", "123");
 
-        var threadFish1 = new ThreadFish(1, location1, Direction.Right, 10);
-        threadFish1.StartMoving(map, delay);
-        var threadFish1Id = threadFish1.GetThreadId();
+        // var connection = new HubConnectionBuilder()
+        //     .WithUrl("https://localhost:7060/aquarium")
+        //     .Build();
+        // await connection.InvokeAsync("send", "Hello1");
         //
-        // var threadFish2 = new ThreadFish(1, location2, Direction.Right, 5);
-        // threadFish2.StartMoving(map, delay);
-        // var threadFish2Id = threadFish2.GetThreadId();
-        
-        var taskFish1 = new TaskFish(1, location1, Direction.Right, 10);
-        taskFish1.StartMoving(map, delay);
-        
-        // var taskFish2 = new TaskFish(1, location2, Direction.Right, 5);
-        // taskFish2.StartMoving(map, delay);
+        // while (!stoppingToken.IsCancellationRequested)
+        // {
+        //     Console.WriteLine("pizdec");
+        // }
+        // connection.On<Order>("NewOrder", (order) => 
+        //     Console.WriteLine($"Somebody ordered an {order.Product}"));
+        //
+        // connection.StartAsync().GetAwaiter().GetResult();
+        //
+        // Console.WriteLine("Listening. Press a key to quit");
+        // Console.ReadKey();
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            // ShowLogs(threadFish1, threadFish1Id);
-            // ShowLogs(threadFish2, threadFish2Id);
-            ShowLogs(threadFish1, threadFish1.GetThreadId());
-            ShowLogs(taskFish1, taskFish1.GetTaskId());
-            // ShowLogs(taskFish2);
-            await Task.Delay(delay, stoppingToken);
-        }
+        // while (!stoppingToken.IsCancellationRequested)
+        // {
+        //     
+        // }
     }
 
-    private void ShowLogs(FishBase fish, int id ) =>
-        _logger.LogInformation($"X: {fish.Location.X} Y: {fish.Location.Y} Dir: {fish.Direction} Id: {id}");
+    // private void ShowLogs(FishBase fish, int id ) =>
+    //     _logger.LogInformation($"X: {fish.Location.X} Y: {fish.Location.Y} Dir: {fish.Direction} Id: {id}");
 }
