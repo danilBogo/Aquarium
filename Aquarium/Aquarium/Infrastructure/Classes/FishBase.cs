@@ -6,7 +6,7 @@ public abstract class FishBase
 {
     public int FishId { get; }
     
-    public Location Location { get; }
+    public Location Location { get; private set; }
 
     public Direction Direction { get; set; }
 
@@ -26,22 +26,30 @@ public abstract class FishBase
 
     protected void Move(Map map)
     {
-        CalculateLocation();
-        if (!map.IsFishInBoundaries(Location))
-            RotateFish(map);
+        var newLocation = CalculateLocation();
+        if (!map.IsFishInBoundaries(newLocation))
+            newLocation = RotateFish(map, newLocation);
+        Location = newLocation;
     }
 
-    private void RotateFish(Map map)
+    private Location RotateFish(Map map, Location location)
     {
         ChangeDirection();
-        Location.X = (2 * map.SizeX- Location.X) % map.SizeX;
+        location.X = (2 * map.SizeX - location.X) % map.SizeX;
+        return location;
     }
 
     private void ChangeDirection() => Direction = Direction == Direction.Left 
         ? Direction.Right 
         : Direction.Left;
-
-    private void CalculateLocation() => Location.X = Direction == Direction.Right 
-        ? Location.X + SpeedX 
-        : Location.X - SpeedX;
+    
+    private Location CalculateLocation()
+    {
+        var location = Location;
+        if (Direction == Direction.Right)
+            location.X += SpeedX;
+        else
+            location.X -= SpeedX;
+        return location;
+    }
 }

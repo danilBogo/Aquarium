@@ -5,70 +5,62 @@ class Location {
     }
 }
 
-const Direction = Enum({RIGHT: 'Right', LEFT: 'Left'});
+const Direction = {RIGHT: 'Right', LEFT: 'Left'};
 
 class TaskFish {
     constructor(location, direction, speedX, fishId) {
-        this.location = location;
-        this.direction = direction;
-        this.speedX = speedX;
-        this.fishId = fishId;
+        this.Location = location;
+        this.Direction = direction;
+        this.SpeedX = speedX;
+        this.FishId = fishId;
     }
 }
 
 class ThreadFish {
     constructor(location, direction, speedX, fishId) {
-        this.location = location;
-        this.direction = direction;
-        this.speedX = speedX;
-        this.fishId = fishId;
+        this.Location = location;
+        this.Direction = direction;
+        this.SpeedX = speedX;
+        this.FishId = fishId;
     }
-}
-
-
-function subscribe(connection) {
-    connection.on("TryCreateTaskFish", data => {
-        console.log(data);
-    });
-
-    connection.on("TryCreateThreadFish", data => {
-        console.log(data);
-    });
-
-    connection.on("TryDeleteFishById", data => {
-        console.log(data);
-    });
 }
 
 let connection = new signalR.HubConnectionBuilder()
     .withUrl("/aquarium")
     .build();
 connection.start()
-subscribe();
-
-document.getElementById("sendBtn").addEventListener("click", function (e) {
+document.getElementById("addFishBtn").addEventListener("click", function (e) {
     addFish();
+    return false;
 });
 
 function addFish() {
-    let locationX = document.getElementById("locationX");
-    let locationY = document.getElementById("locationY");
-    location = new Location(locationX, locationY);
-
-    let directionInput = document.getElementById("direction");
+    let locationX = document.getElementById("locationX").value;
+    let locationY = document.getElementById("locationY").value;
+    let location = new Location(parseInt(locationX), parseInt(locationY));
+    let directionInput = document.getElementById("direction").innerText;
     let direction;
     if (directionInput === "Left") direction = Direction.LEFT;
     else direction = Direction.RIGHT;
 
-    let speedX = document.getElementById("speed_input");
+    let speedX = document.getElementById("speed_input").value;
 
-    let fishId = document.getElementById("fishId");
+    let fishId = document.getElementById("fishId").value;
 
-    let colorOfFish = document.getElementById("color");
-    if (colorOfFish === "Чёрный")
-        connection.invoke("TryCreateTaskFish", new TaskFish(location, direction, speedX, fishId));
-    else
-        connection.invoke("TryCreateThreadFish", new ThreadFish(location, direction, speedX, fishId));
+    let colorOfFish = document.getElementById("color").value;
+    if (colorOfFish === "Чёрный") {
+        let fish = new TaskFish(location, direction, parseInt(speedX), parseInt(fishId));
+        let json = JSON.stringify(fish);
+        connection.invoke("TryCreateTaskFish", json).then(data => alert(data))
+        //setTimeout(connection.invoke("GetFishJsonById", fishId).then(data => alert(data)), 2000);
+    } else {
+        let fish = new ThreadFish(location, direction, parseInt(speedX), parseInt(fishId));
+        let json = JSON.stringify(fish);
+        connection.invoke("TryCreateThreadFish", json).then(data => alert(data));
+        setInterval (() => {
+            connection.invoke("GetFishJsonById", fish.FishId).then(data => console.log(data))
+        }, 1000);
+    }
 }
 
 

@@ -2,6 +2,8 @@
 using Aquarium.Infrastructure.Classes;
 using Aquarium.Infrastructure.Enums;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Aquarium.Infrastructure.SignalR;
 
@@ -9,38 +11,52 @@ public class AquariumHub : Hub
 {
     private readonly Map _map;
     private const int _delay = 1000;
-    private readonly Dictionary<int, FishBase> _listFishes = new();
     
     public AquariumHub()
     {
-        _map = new Map(200, 100);
+        _map = new Map(800, 400);
     }
 
     public async Task<Map> GetMap() => _map;
 
-    public bool TryCreateTaskFish(TaskFish taskFish)
+    public bool TryCreateTaskFish(string json)
     {
-        if (_listFishes.ContainsKey(taskFish.FishId))
+        var taskFish = JsonConvert.DeserializeObject<TaskFish>(json);
+        if (taskFish is null)
             return false;
-        _listFishes.Add(taskFish.FishId, taskFish);
+        if (FishDictionary.Dictionary.ContainsKey(taskFish.FishId))
+            return false;
+        FishDictionary.Dictionary.Add(taskFish.FishId, taskFish);
         taskFish.StartMoving(_map, _delay);
         return true;
     }
     
-    public bool TryCreateThreadFish(ThreadFish threadFish)
+    public bool TryCreateThreadFish(string json)
     {
-        if (_listFishes.ContainsKey(threadFish.FishId))
+        var threadFish = JsonConvert.DeserializeObject<ThreadFish>(json);
+        if (threadFish is null)
             return false;
-        _listFishes.Add(threadFish.FishId, threadFish);
+        if (FishDictionary.Dictionary.ContainsKey(threadFish.FishId))
+            return false;
+        FishDictionary.Dictionary.Add(threadFish.FishId, threadFish);
         threadFish.StartMoving(_map, _delay);
         return true;
     }
 
     public bool TryDeleteFishById(int fishId)
     {
-        if (!_listFishes.ContainsKey(fishId))
+        if (!FishDictionary.Dictionary.ContainsKey(fishId))
             return false;
-        _listFishes.Remove(fishId);
+        FishDictionary.Dictionary.Remove(fishId);
         return true;
+    }
+
+    public string GetFishJsonById(int fishId)
+    {
+        if (!FishDictionary.Dictionary.ContainsKey(fishId))
+            return null;
+        var fish = FishDictionary.Dictionary[fishId];
+        var json = JsonSerializer.Serialize(fish);
+        return json;
     }
 }

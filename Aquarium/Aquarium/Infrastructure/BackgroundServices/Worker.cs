@@ -1,5 +1,6 @@
 ﻿using Aquarium.Infrastructure.Classes;
 using Aquarium.Infrastructure.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace Aquarium.Infrastructure.BackgroundServices;
 
