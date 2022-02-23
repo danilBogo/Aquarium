@@ -18,30 +18,18 @@ public class AquariumHub : Hub
 
     public async Task<Map> GetMap() => _map;
 
-<<<<<<< HEAD
-    public bool TryCreateTaskFish(int fishId, TaskFish taskFish)
-    {
-        if (_listFishes.ContainsKey(fishId))
-=======
     public bool TryCreateTaskFish(TaskFish taskFish)
     {
         if (_listFishes.ContainsKey(taskFish.FishId))
->>>>>>> test
             return false;
         _listFishes.Add(taskFish.FishId, taskFish);
         taskFish.StartMoving(_map, _delay);
         return true;
     }
     
-<<<<<<< HEAD
-    public bool TryCreateThreadFish(int fishId, ThreadFish threadFish)
-    {
-        if (_listFishes.ContainsKey(fishId))
-=======
     public bool TryCreateThreadFish(ThreadFish threadFish)
     {
         if (_listFishes.ContainsKey(threadFish.FishId))
->>>>>>> test
             return false;
         _listFishes.Add(threadFish.FishId, threadFish);
         threadFish.StartMoving(_map, _delay);
