@@ -6,4 +6,24 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\desktop.ini" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\fishBlack.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\fishWhite.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\water.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\week2.txt" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\1.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\10.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\2.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\3.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\4.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\5.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\6.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\7.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\8.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\9.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Обыкновенная лисица\Обыкновенная лисица.docx" />
+      <_ContentIncludedByDefault Remove="wwwroot\images\Downloads\Обыкновенная лисица\Презентация1.pptx" />
+    </ItemGroup>
+
 </Project>
