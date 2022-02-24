@@ -5,44 +5,36 @@ using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
+
 namespace Aquarium.Infrastructure.SignalR;
 
 public class AquariumHub : Hub
 {
-    private readonly Map _map;
-    private const int _delay = 50;
-    
-    public AquariumHub()
-    {
-        _map = new Map(800, 400);
-    }
+    private const int Delay = 16;
 
-    public Map GetMap() => _map;
-
-    public bool TryCreateTaskFish(string json)
+    private FishBase DeserializeFish(string json)
     {
-        var taskFish = JsonConvert.DeserializeObject<TaskFish>(json);
-        if (taskFish is null)
-            return false;
-        if (FishDictionary.Dictionary.ContainsKey(taskFish.FishId))
-            return false;
-        FishDictionary.Dictionary.Add(taskFish.FishId, taskFish);
-        taskFish.StartMoving(_map, _delay);
-        return true;
+        if (json.Contains(""))
     }
     
-    public bool TryCreateThreadFish(string json)
+    public bool TryCreateFish(string json)
     {
-        var threadFish = JsonConvert.DeserializeObject<ThreadFish>(json);
-        if (threadFish is null)
+        var aquariumInfo = JsonConvert.DeserializeObject<AquariumInfo>(json);
+        if (aquariumInfo is null)
             return false;
-        if (FishDictionary.Dictionary.ContainsKey(threadFish.FishId))
+        if (FishDictionary.Dictionary.ContainsKey(aquariumInfo.FishBase.FishId))
             return false;
-        FishDictionary.Dictionary.Add(threadFish.FishId, threadFish);
-        threadFish.StartMoving(_map, _delay);
+        FishDictionary.Dictionary.Add(aquariumInfo.FishBase.FishId, aquariumInfo.FishBase);
+        aquariumInfo.FishBase.StartMoving(aquariumInfo.Map, Delay);
         return true;
     }
 
+    public bool TryCleanDictionaryFishes()
+    {
+        FishDictionary.Dictionary.Clear();
+        return true;
+    }
+    
     public bool TryDeleteFishById(int fishId)
     {
         if (!FishDictionary.Dictionary.ContainsKey(fishId))
