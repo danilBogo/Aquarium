@@ -15,7 +15,7 @@ class FishBase {
     }
 }
 
-class Aquarium {
+class Map {
     constructor(sizeX, sizeY) {
         this.SizeX = sizeX;
         this.SizeY = sizeY;
@@ -30,9 +30,9 @@ class Image {
 }
 
 class AquariumInfo {
-    constructor(fishBase, aquarium) {
+    constructor(fishBase, map) {
         this.FishBase = fishBase;
-        this.Aquarium = aquarium;
+        this.Map = map;
     }
 }
 
@@ -69,9 +69,9 @@ connection.start().then(() => {
 });
 
 let delay = 16;
-let map = new Aquarium(800, 400);
+let map = new Map(800, 400);
 let fishImg = new Image(75, 50);
-let serverMap = new Aquarium(map.SizeX - fishImg.Width, map.SizeY);
+let serverMap = new Map(map.SizeX - fishImg.Width, map.SizeY);
 
 setAquariumSize(map);
 

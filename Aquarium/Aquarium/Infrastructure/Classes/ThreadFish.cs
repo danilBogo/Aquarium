@@ -11,13 +11,13 @@ public class ThreadFish : FishBase
     {
     }
 
-    public override void StartMoving(Aquarium aquarium, int delay)
+    public override void StartMoving(Map map, int delay)
     {
         var thread = new Thread(() =>
         {
             while (!_cancelTokenSource.IsCancellationRequested)
             {
-                Move(aquarium);
+                Move(map);
                 Thread.Sleep(delay);
             }
         });

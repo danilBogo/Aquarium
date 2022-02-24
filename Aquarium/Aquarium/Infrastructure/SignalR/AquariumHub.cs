@@ -20,7 +20,7 @@ public class AquariumHub : Hub
         if (FishDictionary.Dictionary.ContainsKey(aquariumInfo.FishBase.FishId))
             return false;
         FishDictionary.Dictionary.Add(aquariumInfo.FishBase.FishId, aquariumInfo.FishBase);
-        aquariumInfo.FishBase.StartMoving(aquariumInfo.Aquarium, Delay);
+        aquariumInfo.FishBase.StartMoving(aquariumInfo.Map, Delay);
         return true;
     }
 

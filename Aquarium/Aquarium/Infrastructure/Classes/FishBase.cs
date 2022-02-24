@@ -22,22 +22,22 @@ public abstract class FishBase
         FishId = fishId;
     }
 
-    public abstract void StartMoving(Aquarium aquarium, int delay);
+    public abstract void StartMoving(Map map, int delay);
     
     public abstract void StopMoving();
 
-    protected void Move(Aquarium aquarium)
+    protected void Move(Map map)
     {
         var newLocation = CalculateLocation();
-        if (!aquarium.IsFishInBoundaries(newLocation))
-            newLocation = RotateFish(aquarium, newLocation);
+        if (!map.IsFishInBoundaries(newLocation))
+            newLocation = RotateFish(map, newLocation);
         Location = newLocation;
     }
 
-    private Location RotateFish(Aquarium aquarium, Location location)
+    private Location RotateFish(Map map, Location location)
     {
         ChangeDirection();
-        location.X = (2 * aquarium.SizeX - location.X) % aquarium.SizeX;
+        location.X = (2 * map.SizeX - location.X) % map.SizeX;
         return location;
     }
 

@@ -3,5 +3,5 @@
 public class AquariumInfo<T> where T: FishBase
 {
     public T FishBase { get; set; }
-    public Aquarium Aquarium { get; set; }
+    public Map Map { get; set; }
 }

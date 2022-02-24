@@ -14,16 +14,16 @@ public class TaskFish : FishBase
 
     private void InvokeTask(object? data)
     {
-        if (data is not Aquarium aquarium)
+        if (data is not Map aquarium)
             return;
         var task = Task.Run(() => Move(aquarium), _cancelTokenSource.Token);
         CurrentThreadId = task.Id;
         Console.WriteLine(task.Id);
     }
 
-    public override void StartMoving(Aquarium aquarium, int delay)
+    public override void StartMoving(Map map, int delay)
     {
-        _timer = new Timer(InvokeTask, aquarium, 0, delay);
+        _timer = new Timer(InvokeTask, map, 0, delay);
     }
 
     public override void StopMoving()

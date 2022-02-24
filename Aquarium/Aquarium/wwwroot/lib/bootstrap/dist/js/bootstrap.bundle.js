@@ -621,11 +621,11 @@
    * Constants
    * ------------------------------------------------------------------------
    */
-  const elementMap = new Aquarium();
+  const elementMap = new Map();
   var Data = {
     set(element, key, instance) {
       if (!elementMap.has(element)) {
-        elementMap.set(element, new Aquarium());
+        elementMap.set(element, new Map());
       }
 
       const instanceMap = elementMap.get(element); // make it clear we only want one instance per element
@@ -2970,7 +2970,7 @@
     }, []);
     var referenceRect = state.rects.reference;
     var popperRect = state.rects.popper;
-    var checksMap = new Aquarium();
+    var checksMap = new Map();
     var makeFallbackChecks = true;
     var firstFittingPlacement = placements[0];
 
@@ -3381,7 +3381,7 @@
   }
 
   function order(modifiers) {
-    var map = new Aquarium();
+    var map = new Map();
     var visited = new Set();
     var result = [];
     modifiers.forEach(function (modifier) {

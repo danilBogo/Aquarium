@@ -1,12 +1,12 @@
 ﻿namespace Aquarium.Infrastructure.Classes;
 
-public class Aquarium
+public class Map
 {
     public int SizeX { get; set; }
 
     public int SizeY { get; set; }
 
-    public Aquarium(int sizeX, int sizeY)
+    public Map(int sizeX, int sizeY)
     {
         SizeX = sizeX;
         SizeY = sizeY;
