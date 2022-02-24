@@ -5,6 +5,8 @@ namespace Aquarium.Infrastructure.Classes;
 public abstract class FishBase
 {
     public int FishId { get; }
+
+    public int CurrentThreadId { get; set; } = -1;
     
     public Location Location { get; private set; }
 
@@ -20,22 +22,22 @@ public abstract class FishBase
         FishId = fishId;
     }
 
-    public abstract void StartMoving(Map map, int delay);
+    public abstract void StartMoving(Aquarium aquarium, int delay);
     
     public abstract void StopMoving();
 
-    protected void Move(Map map)
+    protected void Move(Aquarium aquarium)
     {
         var newLocation = CalculateLocation();
-        if (!map.IsFishInBoundaries(newLocation))
-            newLocation = RotateFish(map, newLocation);
+        if (!aquarium.IsFishInBoundaries(newLocation))
+            newLocation = RotateFish(aquarium, newLocation);
         Location = newLocation;
     }
 
-    private Location RotateFish(Map map, Location location)
+    private Location RotateFish(Aquarium aquarium, Location location)
     {
         ChangeDirection();
-        location.X = (2 * map.SizeX - location.X) % map.SizeX;
+        location.X = (2 * aquarium.SizeX - location.X) % aquarium.SizeX;
         return location;
     }
 

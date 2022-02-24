@@ -12,22 +12,21 @@ public class AquariumHub : Hub
 {
     private const int Delay = 16;
 
-    private FishBase DeserializeFish(string json)
+    private bool TryCreateFish<T>(string json) where T : FishBase
     {
-        if (json.Contains(""))
-    }
-    
-    public bool TryCreateFish(string json)
-    {
-        var aquariumInfo = JsonConvert.DeserializeObject<AquariumInfo>(json);
+        var aquariumInfo = JsonConvert.DeserializeObject<AquariumInfo<T>>(json);
         if (aquariumInfo is null)
             return false;
         if (FishDictionary.Dictionary.ContainsKey(aquariumInfo.FishBase.FishId))
             return false;
         FishDictionary.Dictionary.Add(aquariumInfo.FishBase.FishId, aquariumInfo.FishBase);
-        aquariumInfo.FishBase.StartMoving(aquariumInfo.Map, Delay);
+        aquariumInfo.FishBase.StartMoving(aquariumInfo.Aquarium, Delay);
         return true;
     }
+
+    public bool TryCreateTaskFish(string json) => TryCreateFish<TaskFish>(json);
+    
+    public bool TryCreateThreadFish(string json) => TryCreateFish<ThreadFish>(json);
 
     public bool TryCleanDictionaryFishes()
     {
@@ -43,7 +42,7 @@ public class AquariumHub : Hub
         return true;
     }
 
-    public string GetFishJsonById(int fishId)
+    public string? GetFishJsonById(int fishId)
     {
         if (!FishDictionary.Dictionary.ContainsKey(fishId))
             return null;

@@ -617,11 +617,11 @@ const EventHandler = {
  * Constants
  * ------------------------------------------------------------------------
  */
-const elementMap = new Map();
+const elementMap = new Aquarium();
 var Data = {
   set(element, key, instance) {
     if (!elementMap.has(element)) {
-      elementMap.set(element, new Map());
+      elementMap.set(element, new Aquarium());
     }
 
     const instanceMap = elementMap.get(element); // make it clear we only want one instance per element
