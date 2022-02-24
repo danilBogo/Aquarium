@@ -5,39 +5,48 @@
 }
 
 <div class="d-flex flex-md-row flex-column">
-    <div class="d-flex flex-column col-md-9 col-12">
+    <div class="d-flex flex-column col-md-9 col-12 aquarium">
         <img src="/images/water.jpg" alt="water background" style="width: 800px; height: 400px">
     </div>
-    
+
     <div class="d-flex flex-column col-md-3 col-12">
         <h2>Введите данные о рыбке</h2>
-            <div id="inputForm form-group">
-                <label for="fishId">Id рыбы:</label>
-                <input class="form-control" type="text" id="fishId"/>
-                <br>
-                <label for="locationX">X:</label>
-                <input class="form-control" type="number" id="locationX">
-                <br>
-                <label for="locationY">Y:</label>
-                <input class="form-control" type="number" id="locationY">
-                <br>
-                <label for="direction">Направление:</label>
-                <select id="direction">
-                    <option value="Left">Left</option>
-                    <option value="Right">Right</option>
-                </select>
-                <br>
-                <label for="speed_input">Скорость:</label>
-                <input class="form-control" type="number" id="speed_input">
-                <br>
-                <label for="color">Цвет:</label>
-                <select id="color">
-                    <option value="Белый">Белый</option>
-                    <option value="Чёрный">Чёрный</option>
-                </select>
-                <br>
-                <button type="submit" id="addFishBtn">Поплыли!</button>
-            </div>
+        <div id="inputForm form-group form1">
+            <label for="fishIdToAdd">Id рыбы:</label>
+            <input class="form-control" type="text" id="fishIdToAdd"/>
+            <br>
+            <label for="locationX">X:</label>
+            <input class="form-control" type="number" id="locationX">
+            <br>
+            <label for="locationY">Y:</label>
+            <input class="form-control" type="number" id="locationY">
+            <br>
+            <label for="direction">Направление:</label>
+            <select id="direction">
+                <option value="Left">Left</option>
+                <option value="Right">Right</option>
+            </select>
+            <br>
+            <label for="speed_input">Скорость:</label>
+            <input class="form-control" type="number" id="speed_input">
+            <br>
+            <label for="color">Цвет:</label>
+            <select id="color">
+                <option value="Белый">Белый</option>
+                <option value="Чёрный">Чёрный</option>
+            </select>
+            <br>
+            <button type="submit" id="addFishBtn">Поплыли!</button>
+            <p id="errorForm1"></p>
+        </div>
+        <h2>Введите данные о рыбке для удаления</h2>
+        <div id="inputForm form-group form2">
+            <label for="fishIdToDelete">Id рыбы:</label>
+            <input class="form-control" type="text" id="fishIdToDelete"/>
+            <br>
+            <button type="submit" id="deleteFishBtn">Приплыли :(</button>
+            <p id="informationForm2"></p>
+        </div>
     </div>
 </div>
 

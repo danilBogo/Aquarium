@@ -16,3 +16,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.aquarium {
+  position: relative;
+}
+
+.fish {
+  position: absolute;
+  width: 50px; 
+  height: 25px
+}

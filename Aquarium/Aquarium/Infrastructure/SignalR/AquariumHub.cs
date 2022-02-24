@@ -10,14 +10,14 @@ namespace Aquarium.Infrastructure.SignalR;
 public class AquariumHub : Hub
 {
     private readonly Map _map;
-    private const int _delay = 1000;
+    private const int _delay = 50;
     
     public AquariumHub()
     {
         _map = new Map(800, 400);
     }
 
-    public async Task<Map> GetMap() => _map;
+    public Map GetMap() => _map;
 
     public bool TryCreateTaskFish(string json)
     {
