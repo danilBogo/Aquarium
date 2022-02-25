@@ -10,17 +10,19 @@ public class ThreadFish : FishBase
         direction, speedX, fishId)
     {
     }
+    
+    private void DoMoving(Map map, int delay)
+    {
+        while (!_cancelTokenSource.IsCancellationRequested)
+        {
+            Move(map);
+            Thread.Sleep(delay);
+        }
+    }
 
     public override void StartMoving(Map map, int delay)
     {
-        var thread = new Thread(() =>
-        {
-            while (!_cancelTokenSource.IsCancellationRequested)
-            {
-                Move(map);
-                Thread.Sleep(delay);
-            }
-        });
+        var thread = new Thread(() => DoMoving(map, delay));
         thread.Start();
         CurrentThreadId = thread.ManagedThreadId;
     }

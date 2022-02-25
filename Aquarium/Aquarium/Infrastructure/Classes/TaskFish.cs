@@ -4,7 +4,6 @@ namespace Aquarium.Infrastructure.Classes;
 
 public class TaskFish : FishBase
 {
-    private Timer _timer;
     private readonly CancellationTokenSource _cancelTokenSource = new();
     
     public TaskFish(Location location, Direction direction, int speedX, int fishId) : base(location,
@@ -12,23 +11,18 @@ public class TaskFish : FishBase
     {
     }
 
-    private void InvokeTask(object? data)
+    private void DoMoving(Map map, int delay)
     {
-        if (data is not Map aquarium)
-            return;
-        var task = Task.Run(() => Move(aquarium), _cancelTokenSource.Token);
-        CurrentThreadId = task.Id;
-        Console.WriteLine(task.Id);
+        Task.Run(() =>
+        {
+            Move(map);
+            Thread.Sleep(delay);
+            DoMoving(map, delay);
+        }, _cancelTokenSource.Token);
+        CurrentThreadId = Environment.CurrentManagedThreadId;
     }
 
-    public override void StartMoving(Map map, int delay)
-    {
-        _timer = new Timer(InvokeTask, map, 0, delay);
-    }
+    public override void StartMoving(Map map, int delay) => DoMoving(map, delay);
 
-    public override void StopMoving()
-    {
-        _cancelTokenSource.Cancel();
-        _timer.Dispose();
-    }
+    public override void StopMoving() => _cancelTokenSource.Cancel();
 }
