@@ -29,7 +29,7 @@ app.MapRazorPages();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<ChatHub>("/chat");
+    endpoints.MapHub<AquariumHub>("/aquarium");
 });
 
 app.Run();

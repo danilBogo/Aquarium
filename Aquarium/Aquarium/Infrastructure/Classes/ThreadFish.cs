@@ -5,15 +5,16 @@ namespace Aquarium.Infrastructure.Classes;
 public class ThreadFish : FishBase
 {
     private int _threadId;
+    private readonly CancellationTokenSource _cancelTokenSource = new();
     
-    public ThreadFish(int fishId, Location location, Direction direction, int speedX) : base(fishId, location,
-        direction, speedX)
+    public ThreadFish(Location location, Direction direction, int speedX, int fishId) : base(location,
+        direction, speedX, fishId)
     {
     }
 
     private void DoMoving(Map map, int delay)
     {
-        while (true)
+        while (!_cancelTokenSource.IsCancellationRequested)
         {
             Move(map);
             Thread.Sleep(delay);
@@ -26,6 +27,8 @@ public class ThreadFish : FishBase
         thread.Start();
         _threadId = thread.ManagedThreadId;
     }
+
+    public override void StopMoving() => _cancelTokenSource.Cancel();
 
     public int GetThreadId() => _threadId;
 }
