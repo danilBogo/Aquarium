@@ -12,45 +12,62 @@
     <div class="d-flex flex-column col-md-4 col-12">
         <h2>Введите данные о рыбке</h2>
         <form id="inputForm" class="form-group" onsubmit="return false;">
-            <label for="fishIdToAdd">Id рыбы:</label>
-            <input class="form-control" type="text" id="fishIdToAdd" required/>
-            <br>
-            <label for="locationX">X:</label>
-            <input class="form-control" type="number" id="locationX" required>
-            <br>
-            <label for="locationY">Y:</label>
-            <input class="form-control" type="number" id="locationY" required>
-            <br>
-            <label for="direction">Направление:</label>
-            <select id="direction" required>
-                <option value="Left">Left</option>
-                <option value="Right">Right</option>
-            </select>
-            <br>
-            <label for="speed_input">Скорость:</label>
-            <input class="form-control" type="number" id="speed_input" required>
-            <br>
-            <div class="align-items-center">
-                <label for="color">Цвет:</label>
-                <div class="form-check form-check-inline m-0">
-                    <input class="form-check-input" type="radio" name="color" id="whiteRadio" value="Белый" required>
-                    <label class="form-check-label colors" id="white" for="whiteRadio"></label>
+            <div>
+                <label for="fishIdToAdd">Id рыбы:</label>
+                <input class="form-control" type="text" id="fishIdToAdd" required/>
+            </div>
+            <div class="mt-2">
+                <label for="locationX">X:</label>
+                <input class="form-control" type="number" id="locationX" required>
+            </div>
+            <div class="mt-2">
+                <label for="locationY">Y:</label>
+                <input class="form-control" type="number" id="locationY" required>
+            </div>
+            <div class="mt-2 d-flex justify-content-around">
+                <div class="d-inline">
+                    <label for="directionRadio">Направление:</label>
+                    <div id="directionRadio" class="d-inline">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="direction" id="leftRadio" value="Left" required>
+                            <label class="form-check-label" for="leftRadio">Left</label>
+                        </div>
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="direction" id="rightRadio" value="Right" required>
+                            <label class="form-check-label" for="rightRadio">Right</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-check form-check-inline m-0">
-                    <input class="form-check-input" type="radio" name="color" id="turquoisRadio" value="Бирюзовый" required>
-                    <label class="form-check-label colors" id="turquois" for="turquoisRadio"></label>
+                <div class="d-inline">
+                    <label for="colorRadio">Цвет:</label>
+                    <div id="colorRadio" class="d-inline">
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="color" id="whiteRadio" value="Белый" required>
+                            <label class="form-check-label colors" id="white" for="whiteRadio"></label>
+                        </div>
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="radio" name="color" id="turquoiseRadio" value="Бирюзовый" required>
+                            <label class="form-check-label colors" id="turquoise" for="turquoiseRadio"></label>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <br>        
-            <button type="submit" id="addFishBtn">Поплыли!</button>
-            <p id="informationForm1"></p>
+            <div class="mt-2">
+                <label for="speed_input">Скорость:</label>
+                <input class="form-control" type="number" id="speed_input" required>
+            </div>
+
+            <div class="justify-content-center">
+                <button type="submit" class="btn btn-primary mt-2 w-100" id="addFishBtn">Поплыли!</button>
+                <p id="informationForm1"></p>
+            </div>
         </form>
         <h2>Введите данные о рыбке для удаления</h2>
         <div id="inputForm form-group form2">
             <label for="fishIdToDelete">Id рыбы:</label>
             <input class="form-control" type="text" id="fishIdToDelete"/>
-            <br>
-            <button type="submit" id="deleteFishBtn">Приплыли :(</button>
+
+            <button type="submit" class="btn btn-danger mt-2 w-100" id="deleteFishBtn">Приплыли :(</button>
             <p id="informationForm2"></p>
         </div>
     </div>

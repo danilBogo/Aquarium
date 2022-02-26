@@ -52,26 +52,27 @@ connection.start().then(() => {
 //start data and settings
 let delay = 16;
 let map = new Map(800, 400);
-let fishImg = new Image(75, 50);
+let fishImg = new Image(100, 75);
 let serverMap = new Map(map.SizeX - fishImg.Width, map.SizeY);
 
 setAquariumSize(map);
 
 //button listeners
 document.getElementById("addFishBtn").addEventListener("click", function (e) {
-    document.getElementById("informationForm1").className = "text-success";
-    changeElementTextById("informationForm1", "");
-    document.getElementById("informationForm2").innerHTML = "";
+    clearInfoMessages();
     addFish();
     return false;
 });
 document.getElementById("deleteFishBtn").addEventListener("click", function (e) {
-    document.getElementById("informationForm2").className = "text-success";
-    changeElementTextById("informationForm2", "")
-    document.getElementById("informationForm1").innerHTML = "";
+    clearInfoMessages();
     deleteFish();
     return false;
 });
+
+function clearInfoMessages() {
+    changeElementTextById("informationForm1", "");
+    changeElementTextById("informationForm2", "");
+}
 
 //logic
 function addFish() {
@@ -80,9 +81,10 @@ function addFish() {
     let direction = getDirection();
     let speedX = getSpeedX();
     let colorOfFish = getFishColor();
-    
-    
-    
+
+    if (!isFormValid(fishId, location, speedX))
+        return false;
+
     let fish = new FishBase(location, direction, parseInt(speedX), parseInt(fishId));
     let methodName = getMethodName(colorOfFish);
     startFishMoving(fish, methodName);
@@ -93,8 +95,7 @@ function startFishMoving(fish, methodName) {
     connection.invoke(methodName, json).then(data => {
         if (data === true) {
             createImageWithLabel(fish, methodName);
-            document.getElementById("informationForm1").className = "text-success";
-            changeElementTextById("informationForm1", `Рыбка с id ${fish.FishId} создана`);
+            showMessage("informationForm1", "text-success", `Рыбка с id ${fish.FishId} создана`);
             let interval = setInterval(() => {
                 connection.invoke("GetFishJsonById", fish.FishId).then(data => {
                     if (data === null)
@@ -107,8 +108,7 @@ function startFishMoving(fish, methodName) {
                 })
             }, delay);
         } else {
-            document.getElementById("informationForm1").className = "text-success";
-            changeElementTextById("informationForm1", `Рыбка с id ${fish.FishId} уже существует`);
+            showMessage("informationForm1", "text-success", `Рыбка с id ${fish.FishId} уже существует`);
         }
     })
 }
@@ -118,12 +118,10 @@ function deleteFish() {
     let elementName = "informationForm2";
     connection.invoke("TryDeleteFishById", parseInt(fishId)).then(data => {
         if (data === true) {
-            removeImage(getImageIdByFishId(fishId));
-            document.getElementById("informationForm2").className = "text-success";
-            changeElementTextById(elementName, `Рыбка с id ${fishId} удалена`)
+            removeDiv(getDivIdByFishId(fishId));
+            showMessage("informationForm2", "text-success", `Рыбка с id ${fishId} удалена`);
         } else {
-            document.getElementById("informationForm1").className = "text-danger";
-            changeElementTextById(elementName, `Рыбки с id ${fishId} не существует`)
+            showMessage("informationForm2", "text-danger", `Рыбки с id ${fishId} не существует`);
         }
     })
 }
@@ -134,24 +132,26 @@ function getLocation() {
     return new Location(parseInt(locationX), parseInt(locationY));
 }
 
+const getCheckedValueByRadioName = name => document.querySelector(`input[name = ${name}]:checked`).value;
+
 function getDirection() {
-    let directionInput = getElementValueById("direction");
-    if (directionInput === "Left") return Direction.LEFT;
-    else return Direction.RIGHT;
+    let direction = getCheckedValueByRadioName('direction');
+    return (direction === getDefaultDirection())
+        ? Direction.RIGHT
+        : Direction.LEFT;
 }
 
+const getDefaultDirection = () => getElementValueById("rightRadio");
+
 function redrawFish(fish) {
-    let divId = getImageIdByFishId(fish.FishId);
+    let divId = getDivIdByFishId(fish.FishId);
     let div = document.getElementById(divId);
     div.style.left = `${fish.Location.X}px`;
     div.style.top = `${fish.Location.Y}px`;
 
-    let labelId = getLabelIdByFishId(fish.FishId);
-    let label = document.getElementById(labelId);
-
     let degree = parseInt(fish.Direction) * 180;
-    label.style.transform = `rotate(${degree}deg)`;
-    div.style.transform = `rotate(${degree}deg)`;
+    let img = document.getElementById(getImageIdByFishId(fish.FishId));
+    img.style.transform = `rotate(${degree}deg)`;
 }
 
 function updateLabelText(fish) {
@@ -162,15 +162,29 @@ function updateLabelText(fish) {
 function createImageWithLabel(fish, methodName) {
     let parent = document.querySelector(".aquarium");
     let div = document.createElement('div');
-    div.id = getImageIdByFishId(fish.FishId);
     div.className = "fishWithLabel";
+    div.id = getDivIdByFishId(fish.FishId);
 
+    let img = createImage(methodName);
+    img.id = getImageIdByFishId(fish.FishId);
+
+    let label = createLabel(fish);
+
+    div.appendChild(img);
+    div.appendChild(label);
+    parent.appendChild(div);
+}
+
+function createImage(methodName) {
     let img = document.createElement('img');
     img.className = "fish"
     img.style.width = `${fishImg.Width}px`;
     img.style.height = `${fishImg.Height}px`;
     img.src = getImageSrcByMethodName(methodName);
+    return img;
+}
 
+function createLabel(fish) {
     let label = document.createElement('label');
     let labelForId = getImageIdByFishId(fish);
     let labelId = getLabelIdByFishId(fish.FishId);
@@ -178,27 +192,27 @@ function createImageWithLabel(fish, methodName) {
     label.className = "labelForFish"
     label.innerText = fish.CurrentThreadId;
     label.id = labelId;
-
-    div.appendChild(img);
-    div.appendChild(label);
-
-    parent.appendChild(div);
+    return label;
 }
 
-function removeImage(imageId) {
-    let img = document.getElementById(imageId);
-    img.remove();
+function removeDiv(divId) {
+    document.getElementById(divId).remove();
 }
+
+function showMessage(id, messageType, text) {
+    document.getElementById(id).className = messageType;
+    changeElementTextById(id, text);
+}
+
+const getDivIdByFishId = fishId => `divId${fishId}`;
 
 function getImageSrcByMethodName(methodName) {
     return methodName === 'TryCreateTaskFish'
-        ? "../images/turquoisFish.png"
+        ? "../images/turquoiseFish.png"
         : "../images/whiteFish.png";
 }
 
-function deserializeJsonToFish(data) {
-    return JSON.parse(data);
-}
+const deserializeJsonToFish = data => JSON.parse(data);
 
 function setAquariumSize(map) {
     let element = document.getElementById("backgroundImg");
@@ -207,66 +221,44 @@ function setAquariumSize(map) {
 }
 
 function getMethodName(color) {
-
-    return color === "Бирюзовый"
+    return color === getDefaultColor()
         ? "TryCreateTaskFish"
         : "TryCreateThreadFish";
 }
 
-function getImageIdByFishId(fishId) {
-    return `image${fishId}`;
-}
+const getDefaultColor = () => getElementValueById("turquoiseRadio");
 
-function getLabelIdByFishId(fishId) {
-    return `label${fishId}`;
-}
+const getImageIdByFishId = fishId => `image${fishId}`;
+
+const getLabelIdByFishId = fishId => `label${fishId}`;
 
 //functions-helpers
 function changeElementTextById(elementId, text) {
     document.getElementById(elementId).innerText = text;
 }
 
-function getElementValueById(elementId) {
-    return document.getElementById(elementId).value;
-}
+const getElementValueById = elementId => document.getElementById(elementId).value;
 
-function getSpeedX() {
-    return getElementValueById("speed_input");
-}
+const getSpeedX = () => getElementValueById("speed_input");
 
-function getFishId() {
-    return getElementValueById("fishIdToAdd");
-}
+const getFishId = () => getElementValueById("fishIdToAdd");
 
-function getFishColor() {
-    return document.querySelector('input[name="color"]:checked').value;
-}
+const getFishColor = () => getCheckedValueByRadioName('color');
 
 //validation for inputs
-function validInput(location, speed) {
-    let parsed = parseInt(number);
-    return (!isNaN(parsed) && parsed > 0);
-}
-
-function isIdValid(id) {
-    let parsed = parseInt(id);
-    if (!isNaN(parsed) && parsed > 0)
+function isNumberPositive(number, errorMessage) {
+    let parsedNumber = parseInt(number);
+    if (!isNaN(parsedNumber) && parsedNumber > 0)
         return true;
     else {
         document.getElementById("informationForm1").className = "text-danger";
-        changeElementTextById("informationForm1", "id должен быть положительным числом");
+        changeElementTextById("informationForm1", errorMessage);
     }
 }
 
-function isSpeedValid(speed) {
-    let parsed = parseInt(speed);
-    if (!isNaN(parsed) && parsed > 0)
-        return true;
-    else {
-        document.getElementById("informationForm1").className = "text-danger";
-        changeElementTextById("informationForm1", "Скорость должна быть положительным числом");
-    }
-}
+const isIdValid = id => isNumberPositive(id, "id должен быть положительным числом");
+
+const isSpeedValid = speed => isNumberPositive(speed, "Скорость должна быть положительным числом");
 
 function isLocationValid(location) {
     if (!isLocationXValid(location.X)) {
@@ -285,3 +277,5 @@ function isLocationValid(location) {
 const isLocationXValid = (x) => x >= 0 && x <= serverMap.SizeX;
 const isLocationYValid = (y) => y >= 0 && y <= serverMap.SizeY;
 
+const isFormValid = (fishId, location, speed) =>
+    isIdValid(fishId) && isLocationValid(location) && isSpeedValid(speed);

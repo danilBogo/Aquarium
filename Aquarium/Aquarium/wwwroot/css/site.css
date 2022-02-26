@@ -7,14 +7,14 @@ body, html{
 }
 .colors{
     border: 1px solid black;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
 }
 
 #white{
     background: white;
 }
-#turquois{
+#turquoise{
     background: turquoise;
 }
 

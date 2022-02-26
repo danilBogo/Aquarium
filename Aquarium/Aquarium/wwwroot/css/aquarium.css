@@ -27,17 +27,22 @@ body {
 
 .fishWithLabel{
   position: absolute;
-  width: 75px;
-  height: 50px;
+  display: flex;
+  justify-content: center;
+  width: 100px;
+  height: 75px;
   background: transparent;
   margin: 0;
   padding: 0;
 }
 
 .labelForFish{
-  position: absolute;
-  left: 50%;
-  color: #ffb703;
+  height: 25px;
+  background: #fdffb6;
+  position: relative;
+  display: flex;
+  top:-5px;
+  color: #3c096c;
   font-size: 18px;
   font-weight: bold;
 }
