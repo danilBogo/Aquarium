@@ -17,3 +17,4 @@ document.getElementById("sendBtn").addEventListener("click", function (e) {
 });
 
 hubConnection.start();
+//comment
