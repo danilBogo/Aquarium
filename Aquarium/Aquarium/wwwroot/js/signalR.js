@@ -67,6 +67,7 @@ connection.start().then(() => {
             alert("Словарь не очистился");
     });
 });
+connection.invoke("TryCreateTaskFish", "{Location: 10; }")
 
 let delay = 16;
 let map = new Map(800, 400);
