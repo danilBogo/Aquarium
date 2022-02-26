@@ -5,40 +5,46 @@
 }
 
 <div class="d-flex flex-md-row flex-column">
-    <div class="d-flex flex-column col-md-9 col-12 aquarium">
-        <img src="/images/water.jpg" alt="water background" id="backgroundImg">
+    <div class="d-flex flex-column col-md-8 col-12 aquarium">
+        <img src="/images/water.jpg" alt="water background" id="backgroundImg" class="img-thumbnail">
     </div>
 
-    <div class="d-flex flex-column col-md-3 col-12">
+    <div class="d-flex flex-column col-md-4 col-12">
         <h2>Введите данные о рыбке</h2>
-        <div id="inputForm form-group form1">
+        <form id="inputForm" class="form-group" onsubmit="return false;">
             <label for="fishIdToAdd">Id рыбы:</label>
-            <input class="form-control" type="text" id="fishIdToAdd"/>
+            <input class="form-control" type="text" id="fishIdToAdd" required/>
             <br>
             <label for="locationX">X:</label>
-            <input class="form-control" type="number" id="locationX">
+            <input class="form-control" type="number" id="locationX" required>
             <br>
             <label for="locationY">Y:</label>
-            <input class="form-control" type="number" id="locationY">
+            <input class="form-control" type="number" id="locationY" required>
             <br>
             <label for="direction">Направление:</label>
-            <select id="direction">
+            <select id="direction" required>
                 <option value="Left">Left</option>
                 <option value="Right">Right</option>
             </select>
             <br>
             <label for="speed_input">Скорость:</label>
-            <input class="form-control" type="number" id="speed_input">
+            <input class="form-control" type="number" id="speed_input" required>
             <br>
-            <label for="color">Цвет:</label>
-            <select id="color">
-                <option value="Белый">Белый</option>
-                <option value="Чёрный">Чёрный</option>
-            </select>
-            <br>
+            <div class="align-items-center">
+                <label for="color">Цвет:</label>
+                <div class="form-check form-check-inline m-0">
+                    <input class="form-check-input" type="radio" name="color" id="whiteRadio" value="Белый" required>
+                    <label class="form-check-label colors" id="white" for="whiteRadio"></label>
+                </div>
+                <div class="form-check form-check-inline m-0">
+                    <input class="form-check-input" type="radio" name="color" id="turquoisRadio" value="Бирюзовый" required>
+                    <label class="form-check-label colors" id="turquois" for="turquoisRadio"></label>
+                </div>
+            </div>
+            <br>        
             <button type="submit" id="addFishBtn">Поплыли!</button>
             <p id="informationForm1"></p>
-        </div>
+        </form>
         <h2>Введите данные о рыбке для удаления</h2>
         <div id="inputForm form-group form2">
             <label for="fishIdToDelete">Id рыбы:</label>
@@ -49,6 +55,11 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <partial name="Shared/_ValidationScriptsPartial"></partial>
+}
 
 <script src="js/signalr/dist/browser/signalr.min.js"></script>
 <script src="js/signalR.js"></script>

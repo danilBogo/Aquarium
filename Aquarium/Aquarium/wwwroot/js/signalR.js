@@ -38,26 +38,7 @@ class AquariumInfo {
 
 const Direction = {RIGHT: 'Right', LEFT: 'Left'};
 
-class TaskFish {
-    constructor(location, direction, speedX, fishId, currentThreadId) {
-        this.Location = location;
-        this.Direction = direction;
-        this.SpeedX = speedX;
-        this.FishId = fishId;
-        this.CurrentThreadId = currentThreadId;
-    }
-}
-
-class ThreadFish {
-    constructor(location, direction, speedX, fishId, currentThreadId) {
-        this.Location = location;
-        this.Direction = direction;
-        this.SpeedX = speedX;
-        this.FishId = fishId;
-        this.CurrentThreadId = currentThreadId;
-    }
-}
-
+//signalR connection settings
 let connection = new signalR.HubConnectionBuilder()
     .withUrl("/aquarium")
     .build();
@@ -68,6 +49,7 @@ connection.start().then(() => {
     });
 });
 
+//start data and settings
 let delay = 16;
 let map = new Map(800, 400);
 let fishImg = new Image(75, 50);
@@ -75,27 +57,34 @@ let serverMap = new Map(map.SizeX - fishImg.Width, map.SizeY);
 
 setAquariumSize(map);
 
+//button listeners
 document.getElementById("addFishBtn").addEventListener("click", function (e) {
+    document.getElementById("informationForm1").className = "text-success";
     changeElementTextById("informationForm1", "");
+    document.getElementById("informationForm2").innerHTML = "";
     addFish();
     return false;
 });
 document.getElementById("deleteFishBtn").addEventListener("click", function (e) {
+    document.getElementById("informationForm2").className = "text-success";
     changeElementTextById("informationForm2", "")
+    document.getElementById("informationForm1").innerHTML = "";
     deleteFish();
     return false;
 });
 
+//logic
 function addFish() {
+    let fishId = getFishId();
     let location = getLocation();
-    if (!isLocationValid(location))
-        return false;
     let direction = getDirection();
     let speedX = getSpeedX();
-    let fishId = getFishId();
     let colorOfFish = getFishColor();
-    let fish = createFish(colorOfFish, location, direction, speedX, fishId);
-    let methodName = getMethodName(fish);
+    
+    
+    
+    let fish = new FishBase(location, direction, parseInt(speedX), parseInt(fishId));
+    let methodName = getMethodName(colorOfFish);
     startFishMoving(fish, methodName);
 }
 
@@ -103,8 +92,8 @@ function startFishMoving(fish, methodName) {
     let json = JSON.stringify(new AquariumInfo(fish, serverMap));
     connection.invoke(methodName, json).then(data => {
         if (data === true) {
-            createImageLabel(fish)
-            createImage(fish);
+            createImageWithLabel(fish, methodName);
+            document.getElementById("informationForm1").className = "text-success";
             changeElementTextById("informationForm1", `Рыбка с id ${fish.FishId} создана`);
             let interval = setInterval(() => {
                 connection.invoke("GetFishJsonById", fish.FishId).then(data => {
@@ -117,8 +106,10 @@ function startFishMoving(fish, methodName) {
                     }
                 })
             }, delay);
-        } else
+        } else {
+            document.getElementById("informationForm1").className = "text-success";
             changeElementTextById("informationForm1", `Рыбка с id ${fish.FishId} уже существует`);
+        }
     })
 }
 
@@ -128,18 +119,13 @@ function deleteFish() {
     connection.invoke("TryDeleteFishById", parseInt(fishId)).then(data => {
         if (data === true) {
             removeImage(getImageIdByFishId(fishId));
+            document.getElementById("informationForm2").className = "text-success";
             changeElementTextById(elementName, `Рыбка с id ${fishId} удалена`)
-        } else
+        } else {
+            document.getElementById("informationForm1").className = "text-danger";
             changeElementTextById(elementName, `Рыбки с id ${fishId} не существует`)
+        }
     })
-}
-
-function changeElementTextById(elementId, text) {
-    document.getElementById(elementId).innerText = text;
-}
-
-function getElementValueById(elementId) {
-    return document.getElementById(elementId).value;
 }
 
 function getLocation() {
@@ -154,59 +140,49 @@ function getDirection() {
     else return Direction.RIGHT;
 }
 
-function getSpeedX() {
-    return getElementValueById("speed_input");
-}
-
-function getFishId() {
-    return getElementValueById("fishIdToAdd");
-}
-
-function getFishColor() {
-    return getElementValueById("color");
-}
-
-function createFish(colorOfFish, location, direction, speedX, fishId) {
-    if (colorOfFish === "Чёрный")
-        return new TaskFish(location, direction, parseInt(speedX), parseInt(fishId));
-    else
-        return new ThreadFish(location, direction, parseInt(speedX), parseInt(fishId));
-}
-
 function redrawFish(fish) {
-    let imgId = getImageIdByFishId(fish.FishId);
-    let image = document.getElementById(imgId)
-    image.style.left = `${fish.Location.X}px`;
-    image.style.top = `${fish.Location.Y}px`;
+    let divId = getImageIdByFishId(fish.FishId);
+    let div = document.getElementById(divId);
+    div.style.left = `${fish.Location.X}px`;
+    div.style.top = `${fish.Location.Y}px`;
+
+    let labelId = getLabelIdByFishId(fish.FishId);
+    let label = document.getElementById(labelId);
+
     let degree = parseInt(fish.Direction) * 180;
-    image.style.transform = `rotate(${degree}deg)`;
+    label.style.transform = `rotate(${degree}deg)`;
+    div.style.transform = `rotate(${degree}deg)`;
 }
 
-function updateLabelText(fish){
+function updateLabelText(fish) {
     let labelId = getLabelIdByFishId(fish.FishId);
     changeElementTextById(labelId, fish.CurrentThreadId);
 }
 
-function createImage(fish) {
+function createImageWithLabel(fish, methodName) {
     let parent = document.querySelector(".aquarium");
+    let div = document.createElement('div');
+    div.id = getImageIdByFishId(fish.FishId);
+    div.className = "fishWithLabel";
+
     let img = document.createElement('img');
     img.className = "fish"
     img.style.width = `${fishImg.Width}px`;
     img.style.height = `${fishImg.Height}px`;
-    img.id = getImageIdByFishId(fish.FishId);
-    img.src = getImageNameByFish(fish);
-    parent.appendChild(img);
-}
+    img.src = getImageSrcByMethodName(methodName);
 
-function createImageLabel(fish){
-    let parent = document.querySelector(".aquarium");
     let label = document.createElement('label');
-    let labelForId = getImageIdByFishId(fish.FishId);
+    let labelForId = getImageIdByFishId(fish);
     let labelId = getLabelIdByFishId(fish.FishId);
     label.setAttribute('for', labelForId);
+    label.className = "labelForFish"
     label.innerText = fish.CurrentThreadId;
     label.id = labelId;
-    parent.appendChild(label);
+
+    div.appendChild(img);
+    div.appendChild(label);
+
+    parent.appendChild(div);
 }
 
 function removeImage(imageId) {
@@ -214,11 +190,10 @@ function removeImage(imageId) {
     img.remove();
 }
 
-function getImageNameByFish(fish) {
-    if (fish instanceof TaskFish)
-        return "../images/fishBlack.svg"
-    else
-        return "../images/fishWhite.svg"
+function getImageSrcByMethodName(methodName) {
+    return methodName === 'TryCreateTaskFish'
+        ? "../images/turquoisFish.png"
+        : "../images/whiteFish.png";
 }
 
 function deserializeJsonToFish(data) {
@@ -231,37 +206,82 @@ function setAquariumSize(map) {
     element.style.height = `${map.SizeY}px`;
 }
 
-function getMethodName(fish) {
-    if (fish instanceof TaskFish)
-        return "TryCreateTaskFish";
-    else
-        return "TryCreateThreadFish";
+function getMethodName(color) {
+
+    return color === "Бирюзовый"
+        ? "TryCreateTaskFish"
+        : "TryCreateThreadFish";
+}
+
+function getImageIdByFishId(fishId) {
+    return `image${fishId}`;
+}
+
+function getLabelIdByFishId(fishId) {
+    return `label${fishId}`;
+}
+
+//functions-helpers
+function changeElementTextById(elementId, text) {
+    document.getElementById(elementId).innerText = text;
+}
+
+function getElementValueById(elementId) {
+    return document.getElementById(elementId).value;
+}
+
+function getSpeedX() {
+    return getElementValueById("speed_input");
+}
+
+function getFishId() {
+    return getElementValueById("fishIdToAdd");
+}
+
+function getFishColor() {
+    return document.querySelector('input[name="color"]:checked').value;
+}
+
+//validation for inputs
+function validInput(location, speed) {
+    let parsed = parseInt(number);
+    return (!isNaN(parsed) && parsed > 0);
+}
+
+function isIdValid(id) {
+    let parsed = parseInt(id);
+    if (!isNaN(parsed) && parsed > 0)
+        return true;
+    else {
+        document.getElementById("informationForm1").className = "text-danger";
+        changeElementTextById("informationForm1", "id должен быть положительным числом");
+    }
+}
+
+function isSpeedValid(speed) {
+    let parsed = parseInt(speed);
+    if (!isNaN(parsed) && parsed > 0)
+        return true;
+    else {
+        document.getElementById("informationForm1").className = "text-danger";
+        changeElementTextById("informationForm1", "Скорость должна быть положительным числом");
+    }
 }
 
 function isLocationValid(location) {
     if (!isLocationXValid(location.X)) {
+        document.getElementById("informationForm1").className = "text-danger";
         changeElementTextById("informationForm1", `Координата Х должна находиться в пределах от 0 до ${serverMap.SizeX}`)
         return false;
     }
     if (!isLocationYValid(location.Y)) {
+        document.getElementById("informationForm1").className = "text-danger";
         changeElementTextById("informationForm1", `Координата Y должна находиться в пределах от 0 до ${serverMap.SizeY}`)
         return false;
     }
     return true;
 }
 
-function isLocationXValid(x) {
-    return x >= 0 && x <= serverMap.SizeX
-}
+const isLocationXValid = (x) => x >= 0 && x <= serverMap.SizeX;
+const isLocationYValid = (y) => y >= 0 && y <= serverMap.SizeY;
 
-function isLocationYValid(y) {
-    return y >= 0 && y <= serverMap.SizeY
-}
-
-function getImageIdByFishId(fishId){
-    return `image${fishId}`;
-}
-
-function getLabelIdByFishId(fishId){
-    return `label${fishId}`;
-}

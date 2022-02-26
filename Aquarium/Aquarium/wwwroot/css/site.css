@@ -1,26 +1,20 @@
-html {
-  font-size: 14px;
+﻿.navbar{
+    background: #00B4D8;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+body, html{
+    background: #CAF0F8;   
+}
+.colors{
+    border: 1px solid black;
+    width: 25px;
+    height: 25px;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+#white{
+    background: white;
+}
+#turquois{
+    background: turquoise;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
-.aquarium {
-  position: relative;
-}
-
-.fish {
-  position: absolute;
-}
