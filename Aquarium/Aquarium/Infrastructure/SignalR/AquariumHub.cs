@@ -10,7 +10,7 @@ namespace Aquarium.Infrastructure.SignalR;
 
 public class AquariumHub : Hub
 {
-    private const int Delay = 16;
+    private const int Delay = 10;
 
     private bool TryCreateFish<T>(string json) where T : FishBase
     {

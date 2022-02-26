@@ -48,10 +48,9 @@ connection.start().then(() => {
             alert("Словарь не очистился");
     });
 });
-connection.invoke("TryCreateTaskFish", "{Location: 10; }")
 
 //start data and settings
-let delay = 16;
+let delay = 10;
 let map = new Map(800, 400);
 let fishImg = new Image(100, 75);
 let serverMap = new Map(map.SizeX - fishImg.Width, map.SizeY);
