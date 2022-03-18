@@ -24,7 +24,7 @@ public class ThreadFish : FishBase
     {
         var thread = new Thread(() => DoMoving(map, delay));
         thread.Start();
-        CurrentThreadId = thread.ManagedThreadId;
+        CurrentThreadId = Environment.CurrentManagedThreadId;
     }
 
     public override void StopMoving() => _cancelTokenSource.Cancel();

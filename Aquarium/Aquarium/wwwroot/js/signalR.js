@@ -5,13 +5,23 @@ class Location {
     }
 }
 
-class FishBase {
-    constructor(location, direction, speedX, fishId, currentThreadId) {
+class BaseFish {
+    constructor(location, direction, speedX, fishId) {
         this.Location = location;
         this.Direction = direction;
         this.SpeedX = speedX;
         this.FishId = fishId;
-        this.CurrentThreadId = currentThreadId
+    }
+}
+
+class TaskFish extends BaseFish{
+    constructor(location, direction, speedX, fishId) {
+        super(location, direction, speedX, fishId);
+    }}
+
+class ThreadFish extends BaseFish{
+    constructor(location, direction, speedX, fishId) {
+        super(location, direction, speedX, fishId);
     }
 }
 
@@ -80,13 +90,13 @@ function addFish() {
     let location = getLocation();
     let direction = getDirection();
     let speedX = getSpeedX();
-    let colorOfFish = getFishColor();
+    let fishColor = getFishColor();
 
     if (!isFormValid(fishId, location, speedX))
         return false;
 
-    let fish = new FishBase(location, direction, parseInt(speedX), parseInt(fishId));
-    let methodName = getMethodName(colorOfFish);
+    let fish = getFish(location, direction, parseInt(speedX), parseInt(fishId), fishColor);
+    let methodName = getMethodName(fishColor);
     startFishMoving(fish, methodName);
 }
 
@@ -226,6 +236,12 @@ function getMethodName(color) {
         : "TryCreateThreadFish";
 }
 
+function getFish(location, direction, speedX, fishId, color){
+    return color === getDefaultColor()
+        ? new TaskFish(location, direction, speedX, fishId)
+        : new ThreadFish(location, direction, speedX, fishId);
+}
+
 const getDefaultColor = () => getElementValueById("turquoiseRadio");
 
 const getImageIdByFishId = fishId => `image${fishId}`;
@@ -244,6 +260,8 @@ const getSpeedX = () => getElementValueById("speed_input");
 const getFishId = () => getElementValueById("fishIdToAdd");
 
 const getFishColor = () => getCheckedValueByRadioName('color');
+
+
 
 //validation for inputs
 function isNumberPositive(number, errorMessage) {
